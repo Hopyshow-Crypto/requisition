@@ -148,6 +148,99 @@ class Requisition {
         }
     }
     
+    public function update($id, $data) {
+        try {
+            $this->db->query('UPDATE requisitions SET 
+                             title = :title, 
+                             description = :description, 
+                             amount = :amount, 
+                             currency = :currency,
+                             department = :department, 
+                             category = :category, 
+                             priority = :priority, 
+                             status = :status,
+                             justification = :justification, 
+                             due_date = :due_date,
+                             updated_at = NOW()
+                             WHERE id = :id');
+            
+            $this->db->bind(':id', $id);
+            $this->db->bind(':title', $data['title']);
+            $this->db->bind(':description', $data['description']);
+            $this->db->bind(':amount', $data['amount']);
+            $this->db->bind(':currency', $data['currency']);
+            $this->db->bind(':department', $data['department']);
+            $this->db->bind(':category', $data['category']);
+            $this->db->bind(':priority', $data['priority']);
+            $this->db->bind(':status', $data['status']);
+            $this->db->bind(':justification', $data['justification']);
+            $this->db->bind(':due_date', $data['due_date']);
+            
+            if ($this->db->execute()) {
+                // Send notification if status changed to pending
+                if ($data['status'] === 'pending') {
+                    $notification = new Notification();
+                    $notification->sendRequisitionNotification($id, 'submitted');
+                }
+                
+                return ['success' => true, 'message' => 'Requisition updated successfully'];
+            }
+            
+            return ['success' => false, 'message' => 'Failed to update requisition'];
+        } catch (Exception $e) {
+            error_log("Update requisition error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update requisition'];
+        }
+    }
+    
+    public function updateStatus($id, $status) {
+        try {
+            $this->db->query('UPDATE requisitions SET status = :status WHERE id = :id');
+            $this->db->bind(':id', $id);
+            $this->db->bind(':status', $status);
+            
+            return $this->db->execute();
+        } catch (Exception $e) {
+            error_log("Update status error: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    public function getRetirements($requisitionId) {
+        try {
+            $retirement = new Retirement();
+            return $retirement->getByRequisitionId($requisitionId);
+        } catch (Exception $e) {
+            error_log("Get retirements error: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function getPendingApprovals($userId, $userLevel) {
+        try {
+            $sql = 'SELECT r.*, u.full_name as created_by_name 
+                    FROM requisitions r 
+                    LEFT JOIN users u ON r.created_by = u.id 
+                    WHERE r.status = "pending" 
+                    AND r.current_approval_level <= :user_level
+                    AND r.id IN (
+                        SELECT DISTINCT a.requisition_id 
+                        FROM approval_steps a 
+                        WHERE a.approval_level = r.current_approval_level 
+                        AND a.status = "pending"
+                    )
+                    ORDER BY r.created_at ASC';
+            
+            $this->db->query($sql);
+            $this->db->bind(':user_level', $userLevel - 2); // Adjust for approval level mapping
+            
+            return $this->db->resultSet();
+        } catch (Exception $e) {
+            error_log("Get pending approvals error: " . $e->getMessage());
+            return [];
+        }
+    }
+    
     public function approve($requisitionId, $approvalLevel, $comments = null) {
         try {
             $this->db->beginTransaction();
@@ -214,6 +307,14 @@ class Requisition {
             $this->db->bind(':status', 'rejected');
             $this->db->bind(':id', $requisitionId);
             $this->db->execute();
+            
+            // Send notification
+            $notification = new Notification();
+            $notification->sendRequisitionNotification($requisitionId, 'rejected', $approvalLevel);
+            
+            // Send notification
+            $notification = new Notification();
+            $notification->sendRequisitionNotification($requisitionId, 'approved', $approvalLevel);
             
             $this->db->commit();
             return ['success' => true];
