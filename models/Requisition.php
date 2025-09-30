@@ -25,13 +25,13 @@ class Requisition {
             $this->db->bind(':title', $data['title']);
             $this->db->bind(':description', $data['description']);
             $this->db->bind(':amount', $data['amount']);
-            $this->db->bind(':currency', $data['currency'] ?? 'NGN');
+            $this->db->bind(':currency', isset($data['currency']) ? $data['currency'] : 'NGN');
             $this->db->bind(':department', $data['department']);
             $this->db->bind(':category', $data['category']);
-            $this->db->bind(':priority', $data['priority'] ?? 'medium');
-            $this->db->bind(':status', $data['status'] ?? 'pending');
-            $this->db->bind(':justification', $data['justification'] ?? null);
-            $this->db->bind(':due_date', $data['due_date'] ?? null);
+            $this->db->bind(':priority', isset($data['priority']) ? $data['priority'] : 'medium');
+            $this->db->bind(':status', isset($data['status']) ? $data['status'] : 'pending');
+            $this->db->bind(':justification', isset($data['justification']) ? $data['justification'] : null);
+            $this->db->bind(':due_date', isset($data['due_date']) ? $data['due_date'] : null);
             $this->db->bind(':created_by', $_SESSION['user_id']);
             $this->db->bind(':current_approval_level', 1);
             $this->db->bind(':final_approval_level', 3);
@@ -257,7 +257,7 @@ class Requisition {
             $this->db->query('SELECT SUM(amount) as total FROM requisitions WHERE status = :status');
             $this->db->bind(':status', 'pending');
             $result = $this->db->single();
-            $stats['total_amount_pending'] = $result['total'] ?? 0;
+            $stats['total_amount_pending'] = $result['total'] ? $result['total'] : 0;
             
             // My requisitions (if user specified)
             if ($userId) {

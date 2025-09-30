@@ -14,7 +14,7 @@ class Auth {
             
             $user = $this->db->single();
             
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && $user['password'] == hash('sha256', $password)) {  //password_verify($password, $user['password'])
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_level'] = $user['user_level'];
                 $_SESSION['full_name'] = $user['full_name'];
@@ -57,9 +57,9 @@ class Auth {
             $this->db->bind(':full_name', $data['full_name']);
             $this->db->bind(':email', $data['email']);
             $this->db->bind(':password', $hashedPassword);
-            $this->db->bind(':user_level', $data['user_level'] ?? 1);
-            $this->db->bind(':department', $data['department'] ?? null);
-            $this->db->bind(':has_roles', $data['has_roles'] ?? 'user');
+            $this->db->bind(':user_level', isset($data['user_level']) ? $data['user_level'] : 1);
+            $this->db->bind(':department', isset($data['department']) ? $data['department'] : null);
+            $this->db->bind(':has_roles', isset($data['has_roles']) ? $data['has_roles'] : 'user');
             
             if ($this->db->execute()) {
                 return ['success' => true, 'message' => 'User registered successfully'];

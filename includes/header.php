@@ -20,7 +20,7 @@
                         3
                     </span>
                 </button>
-                
+                <!-- automate the notification -->
                 <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                     <div class="p-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
@@ -53,7 +53,7 @@
                     </div>
                     <div class="hidden md:block text-left">
                         <p class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($_SESSION['full_name']); ?></p>
-                        <p class="text-xs text-gray-500"><?php echo htmlspecialchars($_SESSION['department'] ?? 'No Department'); ?></p>
+                        <p class="text-xs text-gray-500"><?php echo htmlspecialchars(isset($_SESSION['department']) ? $_SESSION['department'] :  'No Department'); ?></p>
                     </div>
                 </button>
 

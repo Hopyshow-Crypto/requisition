@@ -43,7 +43,7 @@ $recentRequisitions = $requisition->getAll([
         <?php include 'includes/sidebar.php'; ?>
         
         <!-- Main Content -->
-        <main class="flex-1 ml-64 p-8">
+        <main class="flex-1 ml-64 p-8 mt-16">
             <!-- Welcome Section -->
             <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 text-white mb-8">
                 <h1 class="text-3xl font-bold mb-2">Welcome to <?php echo APP_NAME; ?></h1>
@@ -61,7 +61,7 @@ $recentRequisitions = $requisition->getAll([
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Total Requisitions</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo $stats['total_requisitions'] ?? 0; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo isset($stats['total_requisitions']) ? $stats['total_requisitions'] : 0; ?></p>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@ $recentRequisitions = $requisition->getAll([
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Pending Approvals</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo $stats['pending_approvals'] ?? 0; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo isset($stats['pending_approvals']) ? $stats['pending_approvals'] : 0; ?></p>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ $recentRequisitions = $requisition->getAll([
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Approved Today</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo $stats['approved_today'] ?? 0; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo isset($stats['approved_today']) ? $stats['approved_today'] : 0; ?></p>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ $recentRequisitions = $requisition->getAll([
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Amount Pending</p>
                             <p class="text-lg font-bold text-gray-900">
-                                <?php echo formatCurrency($stats['total_amount_pending'] ?? 0); ?>
+                                <?php echo formatCurrency(isset($stats['total_amount_pending']) ? $stats['total_amount_pending'] : 0); ?>
                             </p>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ $recentRequisitions = $requisition->getAll([
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">My Requisitions</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo $stats['my_requisitions'] ?? 0; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo isset($stats['my_requisitions']) ? $stats['my_requisitions'] : 0; ?></p>
                         </div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ $recentRequisitions = $requisition->getAll([
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Rejected</p>
-                            <p class="text-2xl font-bold text-gray-900"><?php echo $stats['rejected_requisitions'] ?? 0; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo isset($stats['rejected_requisitions']) ? $stats['rejected_requisitions'] : 0; ?></p>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@ $recentRequisitions = $requisition->getAll([
                                                 'rejected' => 'bg-red-100 text-red-800',
                                                 'draft' => 'bg-gray-100 text-gray-800'
                                             ];
-                                            $colorClass = $statusColors[$req['status']] ?? 'bg-gray-100 text-gray-800';
+                                            $colorClass = isset($statusColors[$req['status']]) ? $statusColors[$req['status']] : 'bg-gray-100 text-gray-800';
                                             ?>
                                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <?php echo $colorClass; ?>">
                                                 <?php echo ucfirst($req['status']); ?>

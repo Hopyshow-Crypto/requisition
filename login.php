@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo APP_NAME; ?> - Login</title>
+    <link rel="icon" type="image/jpg" href="assets/images/logo.jpg">
+    <link rel="shortcut icon" type="image/jpg" href="assets/images/logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -38,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="max-w-md w-full space-y-8">
         <div>
             <div class="mx-auto h-12 w-12 flex items-center justify-center bg-blue-600 rounded-lg">
-                <i class="fas fa-file-invoice text-white text-xl"></i>
+                <!-- <i class="fas fa-file-invoice text-white text-xl"></i> -->
+                <center><img src="assets/images/logo.jpg" alt="Whoba Ogo Foundation" class="h-10 w-auto"></center>
             </div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Sign in to your account
@@ -60,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email" class="sr-only">Email address</label>
                     <input id="email" name="email" type="email" required 
                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
-                           placeholder="Email address" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+                           placeholder="Email address" value="<?php echo htmlspecialchars(isset($_POST['email']) ? $_POST['email'] : ''); ?>">
                 </div>
                 <div>
                     <label for="password" class="sr-only">Password</label>
@@ -98,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="text-center">
                 <p class="text-sm text-gray-600">
-                    Default admin login: admin@requisition.com / admin123
+                <p>&copy; <?php echo date('Y'); ?> <?php echo APP_NAME; ?></p>
                 </p>
             </div>
         </form>
